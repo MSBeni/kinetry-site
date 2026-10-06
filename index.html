@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kinetry</title>
+<meta name="description" content="Kinetry turns your lessons, guides and documents into narrated videos in your brand.">
+<meta property="og:title" content="Kinetry">
+<meta property="og:description" content="Your lessons, set in motion.">
+<meta property="og:image" content="media/og.jpg">
+<meta name="theme-color" content="#EDEFF5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='26' cy='32' r='20' fill='%23FF4FA3'/%3E%3Ccircle cx='38' cy='32' r='20' fill='%232E5BFF' style='mix-blend-mode:multiply'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/anybody.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face {
+  font-family: "Anybody"; src: url("fonts/anybody.woff2") format("woff2");
+  font-weight: 100 900; font-stretch: 50% 150%; font-display: swap;
+}
+@font-face {
+  font-family: "Hanken Grotesk"; src: url("fonts/hanken-grotesk.woff2") format("woff2");
+  font-weight: 100 900; font-display: swap;
+}
+:root {
+  --paper: #EDEFF5;
+  --ink: #1B1E3F;
+  --ink-soft: #4A4F78;
+  --pink: #FF4FA3;
+  --blue: #2E5BFF;
+  --sun: #FFC93C;
+  --gutter: clamp(16px, 4vw, 56px);
+  --display: "Anybody", "Arial Narrow", sans-serif;
+  --text: "Hanken Grotesk", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--text);
+  font-size: 18px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+/* riso grain over everything */
+body::after {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 50;
+  opacity: .22; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .1 0 0 0 0 .25 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; border-radius: 4px; }
+
+/* ---------- top bar ---------- */
+.bar {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 22px var(--gutter);
+  font-weight: 600; font-size: 16px;
+}
+.dot { display: inline-flex; width: 30px; height: 20px; position: relative; vertical-align: -4px; margin-right: 8px; }
+.dot i { position: absolute; top: 0; width: 20px; height: 20px; border-radius: 50%; mix-blend-mode: multiply; }
+.dot i:first-child { left: 0; background: var(--pink); }
+.dot i:last-child { left: 10px; background: var(--blue); }
+.talk {
+  text-decoration: none; padding: 9px 18px; border-radius: 999px;
+  border: 2px solid var(--ink);
+}
+.talk:hover { background: var(--ink); color: var(--paper); }
+
+/* ---------- hero ---------- */
+.hero {
+  min-height: 100svh;
+  display: grid; grid-template-rows: 1fr auto;
+  padding: 96px var(--gutter) 40px;
+  position: relative; isolation: isolate;
+}
+.blobs { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
+.blobs span {
+  position: absolute; border-radius: 50%; mix-blend-mode: multiply;
+  background-image: radial-gradient(circle, rgba(0,0,0,.18) 1.2px, transparent 1.6px);
+  background-size: 7px 7px;
+}
+.blobs .b1 { width: 46vw; height: 46vw; right: -8vw; top: -10vw; background-color: var(--sun); opacity: .75; }
+.blobs .b2 { width: 22vw; height: 22vw; left: 6vw; bottom: 14vh; background-color: var(--pink); opacity: .55; }
+
+.word {
+  align-self: center;
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(76px, 19.5vw, 340px);
+  line-height: .82;
+  letter-spacing: -.01em;
+  position: relative;
+  display: grid;
+  user-select: none;
+}
+.word .layer { grid-area: 1 / 1; display: flex; white-space: nowrap; mix-blend-mode: multiply; }
+.word .l1 { color: var(--pink); transform: translate(var(--mx, -.035em), var(--my, .02em)); }
+.word .l2 { color: var(--blue); }
+.word .ch {
+  display: inline-block;
+  font-variation-settings: "wdth" 50, "wght" 800;
+  transition: font-variation-settings 1.4s cubic-bezier(.2,.9,.1,1);
+}
+.word.go .ch { font-variation-settings: "wdth" var(--w), "wght" var(--g); }
+
+.lead {
+  display: flex; flex-wrap: wrap; gap: 20px 40px;
+  align-items: end; justify-content: space-between;
+}
+.lead p {
+  margin: 0; max-width: 15ch;
+  font-family: var(--display);
+  font-size: clamp(26px, 3.2vw, 44px);
+  line-height: 1.05;
+  font-variation-settings: "wdth" 85, "wght" 560;
+}
+.play {
+  display: inline-flex; align-items: center; gap: 14px;
+  font: 600 18px var(--text);
+  background: var(--ink); color: var(--paper);
+  border: 0; border-radius: 999px; padding: 14px 26px 14px 16px;
+  cursor: pointer; text-decoration: none;
+}
+.play b {
+  width: 34px; height: 34px; border-radius: 50%; background: var(--pink);
+  display: grid; place-items: center;
+}
+.play b::before { content: ""; border-left: 11px solid var(--ink); border-top: 7px solid transparent; border-bottom: 7px solid transparent; margin-left: 3px; }
+.play:hover b { background: var(--sun); }
+
+/* ---------- reel ---------- */
+.reel {
+  padding: 40px var(--gutter) 80px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(18px, 2.4vw, 36px);
+  align-items: start;
+}
+.clip { margin: 0; position: relative; }
+.clip button {
+  all: unset; display: block; width: 100%; cursor: pointer; position: relative;
+  border-radius: 14px;
+}
+.clip video, .clip img {
+  display: block; width: 100%; height: auto; border-radius: 14px;
+  background: #fff;
+}
+/* the print offset: a solid plate behind each frame */
+.clip button::before {
+  content: ""; position: absolute; inset: 0; border-radius: 14px; z-index: -1;
+  background: var(--plate, var(--pink)); transform: translate(10px, 10px);
+  mix-blend-mode: multiply; transition: transform .35s ease;
+}
+.clip button:hover::before, .clip button:focus-visible::before { transform: translate(16px, 16px); }
+.clip figcaption {
+  margin-top: 18px; font-size: 16px; color: var(--ink-soft); max-width: 34ch;
+}
+.clip .sound {
+  position: absolute; left: 14px; bottom: 14px;
+  background: rgba(27,30,63,.82); color: #fff; font: 600 13px var(--text);
+  padding: 6px 12px; border-radius: 999px; pointer-events: none;
+}
+.c1 { grid-column: 1 / span 8; --plate: var(--blue); }
+.c2 { grid-column: 10 / span 3; margin-top: 12vh; --plate: var(--pink); }
+.c3 { grid-column: 2 / span 4; margin-top: 4vh; --plate: var(--sun); }
+.c4 { grid-column: 6 / span 7; margin-top: 14vh; --plate: var(--pink); }
+.c6 { grid-column: 7 / span 3; margin-top: 10vh; --plate: var(--blue); }
+
+/* ---------- what it does ---------- */
+.does {
+  padding: 60px var(--gutter) 110px;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 56px 6vw;
+}
+.does h2 {
+  grid-column: 1 / -1; margin: 0 0 8px;
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(44px, 7.5vw, 120px); line-height: .9;
+  font-variation-settings: "wdth" 62, "wght" 820;
+  max-width: 11ch;
+}
+.does p {
+  margin: 0; font-size: clamp(20px, 2vw, 26px); line-height: 1.3; max-width: 26ch;
+  padding-left: 48px; position: relative;
+}
+.does p::before {
+  content: ""; position: absolute; left: 0; top: .2em;
+  width: 28px; height: 28px; border-radius: 50%; background: var(--c);
+  mix-blend-mode: multiply;
+}
+.does p:nth-of-type(1) { --c: var(--pink); }
+.does p:nth-of-type(2) { --c: var(--blue); }
+.does p:nth-of-type(3) { --c: var(--sun); }
+.does p:nth-of-type(4) { --c: var(--pink); }
+
+/* ---------- end ---------- */
+.end {
+  padding: 90px var(--gutter) 40px;
+  background: var(--blue); color: var(--paper);
+  position: relative; overflow: hidden;
+}
+.end h2 {
+  margin: 0; font-family: var(--display); font-weight: 800;
+  font-size: clamp(54px, 12vw, 210px); line-height: .85;
+  font-variation-settings: "wdth" 140, "wght" 850;
+}
+.end .row { display: flex; flex-wrap: wrap; gap: 24px; justify-content: space-between; align-items: center; margin-top: 48px; }
+.end .talk { border-color: var(--paper); font-size: 20px; padding: 14px 28px; }
+.end .talk:hover { background: var(--paper); color: var(--blue); }
+.end small { font-size: 14px; opacity: .8; }
+.end::before {
+  content: ""; position: absolute; width: 40vw; height: 40vw; right: -12vw; top: -14vw;
+  border-radius: 50%; background: var(--pink); mix-blend-mode: multiply; opacity: .9;
+}
+
+/* ---------- player ---------- */
+dialog {
+  border: 0; padding: 0; background: transparent; max-width: min(92vw, 1400px); max-height: 92vh;
+}
+dialog::backdrop { background: rgba(27,30,63,.88); }
+dialog video { display: block; max-width: 100%; max-height: 86vh; border-radius: 12px; background: #000; }
+dialog .close {
+  position: absolute; top: -44px; right: 0; background: none; border: 0; color: #fff;
+  font: 600 16px var(--text); cursor: pointer; padding: 8px;
+}
+
+/* ---------- small screens ---------- */
+@media (max-width: 760px) {
+  body { font-size: 17px; }
+  .reel { grid-template-columns: repeat(6, 1fr); }
+  .c1, .c4, .c5 { grid-column: 1 / -1; margin-top: 0; }
+  .c2, .c6 { grid-column: 1 / span 4; margin-top: 0; }
+  .c3 { grid-column: 2 / span 5; margin-top: 0; }
+  .does { grid-template-columns: 1fr; gap: 28px; }
+  .blobs .b1 { width: 90vw; height: 90vw; right: -40vw; top: -20vw; }
+  .blobs .b2 { width: 44vw; height: 44vw; bottom: 22vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .word .ch { transition: none; }
+  .clip button::before { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <span><span class="dot" aria-hidden="true"><i></i><i></i></span>Kinetry</span>
+  <a class="talk" href="#talk">Talk to us</a>
+</header>
+
+<main>
+  <section class="hero" aria-label="Kinetry">
+    <div class="blobs" aria-hidden="true"><span class="b1"></span><span class="b2"></span></div>
+    <h1 class="word" id="word" aria-label="Kinetry">
+      <span class="layer l1" aria-hidden="true"></span>
+      <span class="layer l2" aria-hidden="true"></span>
+    </h1>
+    <div class="lead">
+      <p>Your lessons, set in motion.</p>
+      <a class="play" href="#reel"><b aria-hidden="true"></b>Watch what it makes</a>
+    </div>
+  </section>
+
+  <section class="reel" id="reel" aria-label="Videos made with Kinetry"></section>
+
+  <section class="does" aria-labelledby="does-h">
+    <h2 id="does-h">A page goes in. A film comes out.</h2>
+    <p>Reads what you already have: documents, slides, web pages and recordings.</p>
+    <p>Takes your colors, type and logo from your website.</p>
+    <p>Writes the script, picks the scenes and narrates, in many languages.</p>
+    <p>Runs in your own cloud, with your own AI keys.</p>
+  </section>
+</main>
+
+<footer class="end" id="talk">
+  <h2>Let’s make yours.</h2>
+  <div class="row">
+    <a class="talk" href="mailto:moe@kinetry.xyz?subject=Kinetry">Talk to us</a>
+    <small>© 2026 Kinetry</small>
+  </div>
+</footer>
+
+<dialog id="player" aria-label="Video player">
+  <button class="close" type="button">Close</button>
+  <video controls playsinline></video>
+</dialog>
+
+<script>
+// ---- the word: each letter settles at its own width, printed twice in pink and blue
+const word = document.getElementById("word");
+const letters = "Kinetry".split("");
+const widths = [140, 62, 118, 74, 150, 88, 128];
+const weights = [880, 700, 820, 760, 900, 720, 860];
+for (const layer of word.querySelectorAll(".layer")) {
+  letters.forEach((c, i) => {
+    const s = document.createElement("span");
+    s.className = "ch"; s.textContent = c;
+    s.style.setProperty("--w", widths[i]); s.style.setProperty("--g", weights[i]);
+    s.style.transitionDelay = (i * 90) + "ms";
+    layer.appendChild(s);
+  });
+}
+const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+document.fonts.ready.then(() => requestAnimationFrame(() => word.classList.add("go")));
+// the pink plate follows the pointer a little, like a print slipping out of register
+if (!still) {
+  addEventListener("pointermove", (e) => {
+    const x = (e.clientX / innerWidth - .5) * .09, y = (e.clientY / innerHeight - .5) * .06;
+    word.style.setProperty("--mx", x.toFixed(3) + "em");
+    word.style.setProperty("--my", y.toFixed(3) + "em");
+  }, { passive: true });
+}
+
+// ---- the reel
+const clips = [
+  { src: "brightside", cls: "c1", alt: "A camping gear brand's first-hike guide with its lantern, bottle and speaker in 3D", cap: "An outdoor brand’s first-hike guide, with its own products in 3D." },
+  { src: "cafe-first-shift", cls: "c2", alt: "A café's first-shift guide in a vertical phone format", cap: "A café’s first-shift guide, made for phones." },
+  { src: "launch-roles", cls: "c3", alt: "Launch roles explained in a square format", cap: "Who does what in a launch, square for social." },
+  // { src: "spot-the-phish-motion", cls: "c4", alt: "A security lesson on spotting phishing emails", cap: "Spotting phishing, with camera moves and kinetic type." },
+  { src: "taarof", cls: "c6", alt: "A playful workplace etiquette video in Farsi, laid out right to left", cap: "Workplace etiquette in Farsi, right to left." },
+];
+const reel = document.getElementById("reel");
+const player = document.getElementById("player");
+const pv = player.querySelector("video");
+for (const c of clips) {
+  const fig = document.createElement("figure");
+  fig.className = "clip " + c.cls;
+  fig.innerHTML = `<button type="button" aria-label="Play with sound: ${c.alt}">
+      <video muted loop playsinline preload="none" poster="media/${c.src}.jpg" src="media/${c.src}.mp4"></video>
+      <span class="sound">Play with sound</span></button>
+    <figcaption>${c.cap}</figcaption>`;
+  fig.querySelector("button").addEventListener("click", () => {
+    pv.src = `media/${c.src}.mp4`; pv.muted = false; pv.currentTime = 0;
+    player.showModal(); pv.play().catch(() => {});
+  });
+  reel.appendChild(fig);
+}
+// previews play silently while on screen
+if (!still) {
+  const io = new IntersectionObserver((es) => {
+    for (const e of es) { const v = e.target; e.isIntersecting ? v.play().catch(() => {}) : v.pause(); }
+  }, { threshold: .35 });
+  reel.querySelectorAll("video").forEach((v) => io.observe(v));
+}
+const shut = () => { pv.pause(); player.close(); };
+player.querySelector(".close").addEventListener("click", shut);
+player.addEventListener("click", (e) => { if (e.target === player) shut(); });
+player.addEventListener("close", () => pv.pause());
+</script>
+</body>
+</html>
