@@ -170,7 +170,7 @@ a { color: inherit; }
 .c2 { grid-column: 10 / span 3; margin-top: 12vh; --plate: var(--pink); }
 .c3 { grid-column: 2 / span 4; margin-top: 4vh; --plate: var(--sun); }
 .c4 { grid-column: 6 / span 7; margin-top: 14vh; --plate: var(--pink); }
-.c6 { grid-column: 7 / span 3; margin-top: 10vh; --plate: var(--blue); }
+.c6 { grid-column: 3 / span 3; margin-top: 2vh; --plate: var(--blue); }
 
 /* ---------- what it does ---------- */
 .does {
@@ -233,6 +233,7 @@ dialog .close {
 /* ---------- small screens ---------- */
 @media (max-width: 760px) {
   body { font-size: 17px; }
+  .hero { min-height: 82svh; }
   .reel { grid-template-columns: repeat(6, 1fr); }
   .c1, .c4, .c5 { grid-column: 1 / -1; margin-top: 0; }
   .c2, .c6 { grid-column: 1 / span 4; margin-top: 0; }
@@ -323,7 +324,7 @@ const clips = [
   { src: "brightside", cls: "c1", alt: "A camping gear brand's first-hike guide with its lantern, bottle and speaker in 3D", cap: "An outdoor brand’s first-hike guide, with its own products in 3D." },
   { src: "cafe-first-shift", cls: "c2", alt: "A café's first-shift guide in a vertical phone format", cap: "A café’s first-shift guide, made for phones." },
   { src: "launch-roles", cls: "c3", alt: "Launch roles explained in a square format", cap: "Who does what in a launch, square for social." },
-  // { src: "spot-the-phish-motion", cls: "c4", alt: "A security lesson on spotting phishing emails", cap: "Spotting phishing, with camera moves and kinetic type." },
+  { src: "spot-the-phish-motion", cls: "c4", alt: "A security lesson on spotting phishing emails", cap: "Spotting phishing, with camera moves and kinetic type." },
   { src: "taarof", cls: "c6", alt: "A playful workplace etiquette video in Farsi, laid out right to left", cap: "Workplace etiquette in Farsi, right to left." },
 ];
 const reel = document.getElementById("reel");
