@@ -170,7 +170,9 @@ a { color: inherit; }
 .c2 { grid-column: 10 / span 3; margin-top: 12vh; --plate: var(--pink); }
 .c3 { grid-column: 2 / span 4; margin-top: 4vh; --plate: var(--sun); }
 .c4 { grid-column: 6 / span 7; margin-top: 14vh; --plate: var(--pink); }
-.c6 { grid-column: 3 / span 3; margin-top: 2vh; --plate: var(--blue); }
+.c5 { grid-column: 4 / span 8; margin-top: 8vh; --plate: var(--sun); }
+.c7 { grid-column: 1 / span 7; margin-top: 8vh; --plate: var(--pink); }
+.c6 { grid-column: 9 / span 3; margin-top: 4vh; --plate: var(--blue); }
 
 /* ---------- what it does ---------- */
 .does {
@@ -235,7 +237,7 @@ dialog .close {
   body { font-size: 17px; }
   .hero { min-height: 82svh; }
   .reel { grid-template-columns: repeat(6, 1fr); }
-  .c1, .c4, .c5 { grid-column: 1 / -1; margin-top: 0; }
+  .c1, .c4, .c5, .c7 { grid-column: 1 / -1; margin-top: 0; }
   .c2, .c6 { grid-column: 1 / span 4; margin-top: 0; }
   .c3 { grid-column: 2 / span 5; margin-top: 0; }
   .does { grid-template-columns: 1fr; gap: 28px; }
@@ -284,7 +286,7 @@ dialog .close {
   <h2>Let’s make yours.</h2>
   <div class="row">
     <a class="talk" href="mailto:moe@kinetry.xyz?subject=Kinetry">Talk to us</a>
-    <small>© 2026 Kinetry. All brands in these videos are made up. 3D furniture: Khronos glTF sample models by Eric Chadwick, © Wayfair LLC, CC0 and CC BY 4.0.</small>
+    <small>© 2026 Kinetry. All brands in these videos are made up. 3D models: Khronos glTF sample models by Eric Chadwick, © Wayfair LLC, Rico Cilliers, Poly Haven and sbtron, CC0 and CC BY 4.0.</small>
   </div>
 </footer>
 
@@ -321,10 +323,12 @@ if (!still) {
 
 // ---- the reel
 const clips = [
-  { src: "ostra", cls: "c1", alt: "A furniture brand's showroom training, with its sofa, chair and lamps turning in 3D", cap: "A furniture brand’s showroom training, with its own pieces in 3D." },
+  { src: "onboarding", cls: "c1", alt: "A learning program's first-week guide, with two hosts, a learner and a coach, and 3D objects", cap: "A program’s first-week guide, in four voices." },
   { src: "cafe-first-shift", cls: "c2", alt: "A café's first-shift guide in a vertical phone format", cap: "A café’s first-shift guide, made for phones." },
   { src: "launch-roles", cls: "c3", alt: "Launch roles explained in a square format", cap: "Who does what in a launch, square for social." },
   { src: "spot-the-phish-motion", cls: "c4", alt: "A security lesson on spotting phishing emails", cap: "Spotting phishing, with camera moves and kinetic type." },
+  { src: "aula", cls: "c5", alt: "A micro-lesson on giving useful feedback, in Spanish, with a two-voice dialogue", cap: "A micro-lesson on feedback, in Spanish." },
+  { src: "ostra", cls: "c7", alt: "A furniture brand's showroom training, with its sofa, chair and lamps turning in 3D", cap: "A furniture brand’s showroom training, with its own pieces in 3D." },
   { src: "qinglan", cls: "c6", alt: "A tea house's guide for new staff, in Mandarin Chinese", cap: "A tea house’s first lesson for new staff, in Chinese." },
 ];
 const reel = document.getElementById("reel");
