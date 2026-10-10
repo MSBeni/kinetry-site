@@ -84,6 +84,9 @@ a { color: inherit; }
   border: 2px solid var(--ink);
 }
 .talk:hover { background: var(--ink); color: var(--paper); }
+.links { display: flex; align-items: center; gap: 22px; }
+.links .docs { text-decoration: none; }
+.links .docs:hover { text-decoration: underline; text-underline-offset: 4px; }
 
 /* ---------- hero ---------- */
 .hero {
@@ -269,7 +272,7 @@ dialog .close {
 
 <header class="bar">
   <span><span class="dot" aria-hidden="true"><i></i><i></i></span>Kinetry</span>
-  <a class="talk" href="#talk">Talk to us</a>
+  <nav class="links"><a class="docs" href="/docs/">Docs</a><a class="talk" href="#talk">Talk to us</a></nav>
 </header>
 
 <main>

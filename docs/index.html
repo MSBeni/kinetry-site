@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kinetry docs</title>
+<meta name="description" content="What Kinetry does and how to use it: sources, brands, voices, models, the Python API, the HTTP service, MCP and LangChain tools.">
+<link rel="canonical" href="https://kinetry.xyz/docs/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kinetry.xyz/docs/">
+<meta property="og:site_name" content="Kinetry">
+<meta property="og:title" content="Kinetry docs">
+<meta property="og:description" content="Turn learning content and a brand into narrated, on-brand videos, from your own pipeline.">
+<meta property="og:image" content="https://kinetry.xyz/media/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kinetry.xyz/media/og.jpg">
+<meta name="theme-color" content="#EDEFF5">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preload" href="/fonts/anybody.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face { font-family: "Anybody"; src: url("/fonts/anybody.woff2") format("woff2"); font-weight: 100 900; font-stretch: 50% 150%; font-display: swap; }
+@font-face { font-family: "Hanken Grotesk"; src: url("/fonts/hanken-grotesk.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+:root {
+  --paper: #EDEFF5; --card: #F7F8FC; --ink: #1B1E3F; --ink-soft: #4A4F78; --line: #D5D9E8;
+  --pink: #FF4FA3; --blue: #2E5BFF; --sun: #FFC93C; --code: #1B1E3F;
+  --gutter: clamp(16px, 4vw, 56px);
+  --display: "Anybody", "Arial Narrow", sans-serif;
+  --text: "Hanken Grotesk", system-ui, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--text); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: var(--blue); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+
+/* top bar */
+.bar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 28px; padding: 16px var(--gutter);
+  background: rgba(237, 239, 245, .9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+  font-weight: 600; font-size: 16px; }
+.bar a { color: var(--ink); text-decoration: none; }
+.home { display: inline-flex; align-items: center; }
+.dot { display: inline-flex; width: 30px; height: 20px; position: relative; margin-right: 8px; }
+.dot i { position: absolute; top: 0; width: 20px; height: 20px; border-radius: 50%; mix-blend-mode: multiply; }
+.dot i:first-child { left: 0; background: var(--pink); }
+.dot i:last-child { left: 10px; background: var(--blue); }
+.bar nav { display: flex; gap: 22px; margin-left: auto; align-items: center; }
+.bar nav a[aria-current] { color: var(--blue); }
+.talk { padding: 8px 16px; border-radius: 999px; border: 2px solid var(--ink); }
+.talk:hover { background: var(--ink); color: var(--paper) !important; }
+
+/* hero */
+.top { padding: 64px var(--gutter) 40px; position: relative; overflow: hidden; isolation: isolate; }
+.top::before { content: ""; position: absolute; width: 34vw; height: 34vw; max-width: 460px; max-height: 460px; right: -6vw; top: -10vw; border-radius: 50%;
+  background: var(--sun) radial-gradient(circle, rgba(0,0,0,.16) 1.2px, transparent 1.6px) 0 0 / 7px 7px; opacity: .7; mix-blend-mode: multiply; z-index: -1; }
+.top h1 { margin: 0; font-family: var(--display); font-weight: 800; font-variation-settings: "wdth" 70, "wght" 820;
+  font-size: clamp(48px, 8vw, 112px); line-height: .9; letter-spacing: -.01em; max-width: 12ch; }
+.top h1 span { color: var(--blue); }
+.top p { max-width: 58ch; font-size: clamp(18px, 1.6vw, 21px); color: var(--ink-soft); margin: 22px 0 0; }
+.pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.pills span { font-size: 14px; font-weight: 600; padding: 6px 14px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
+
+/* layout */
+.wrap { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); padding: 0 var(--gutter) 80px; max-width: 1280px; }
+.toc { position: sticky; top: 84px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; padding: 8px 0; font-size: 15px; }
+.toc a { display: block; padding: 6px 12px; border-left: 2px solid var(--line); color: var(--ink-soft); text-decoration: none; }
+.toc a:hover { color: var(--ink); }
+.toc a.on { color: var(--ink); font-weight: 600; border-left-color: var(--pink); }
+article { min-width: 0; max-width: 860px; }
+section { padding-top: 26px; }
+h2 { font-family: var(--display); font-weight: 800; font-variation-settings: "wdth" 72, "wght" 800; font-size: clamp(32px, 3.6vw, 46px); line-height: 1; margin: 34px 0 14px; letter-spacing: -.005em; }
+h3 { font-size: 20px; margin: 28px 0 8px; }
+p, li { color: #2c3057; }
+article > section > p { max-width: 70ch; }
+
+/* features */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-top: 18px; }
+.f { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px 16px; position: relative; }
+.f::before { content: ""; position: absolute; left: 20px; top: -7px; width: 14px; height: 14px; border-radius: 50%; background: var(--c, var(--pink)); mix-blend-mode: multiply; }
+.f:nth-child(3n+2) { --c: var(--blue); } .f:nth-child(3n) { --c: var(--sun); }
+.f b { display: block; font-size: 17px; margin-bottom: 4px; }
+.f span { font-size: 15.5px; color: var(--ink-soft); line-height: 1.5; display: block; }
+
+/* flow */
+.flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0 6px; counter-reset: s; }
+.flow div { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; font-size: 14.5px; line-height: 1.4; position: relative; }
+.flow div::before { counter-increment: s; content: counter(s); display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--ink); color: var(--paper); font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+.flow div.ai::after { content: "model"; position: absolute; top: 14px; right: 12px; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--pink); }
+.flow b { display: block; font-size: 15px; }
+
+/* code + tables */
+pre { position: relative; margin: 14px 0; padding: 18px 84px 18px 20px; border-radius: 14px; background: var(--code); color: #E9EBFA; overflow-x: auto; font: 14px/1.6 var(--mono); }
+pre .c { color: #8F95C8; }
+pre button { position: absolute; top: 10px; right: 10px; font: 600 12px var(--text); color: #E9EBFA; background: rgba(255,255,255,.1); border: 0; border-radius: 8px; padding: 5px 10px; cursor: pointer; }
+pre button:hover { background: rgba(255,255,255,.2); }
+code { font-family: var(--mono); font-size: .9em; background: #E1E4F0; padding: 1px 6px; border-radius: 6px; }
+pre code { background: none; padding: 0; font-size: inherit; }
+.tbl { overflow-x: auto; margin: 14px 0; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); background: #E7EAF3; }
+tr:last-child td { border-bottom: 0; }
+td code { white-space: nowrap; }
+.note { margin: 16px 0; padding: 14px 18px; border-radius: 14px; background: #FFF4D6; border: 1px solid #F3DE9E; font-size: 15.5px; }
+.note b { color: var(--ink); }
+ul.tight { padding-left: 20px; } ul.tight li { margin: 4px 0; }
+
+/* end */
+.end { padding: 70px var(--gutter) 34px; background: var(--blue); color: var(--paper); position: relative; overflow: hidden; }
+.end::before { content: ""; position: absolute; width: 30vw; height: 30vw; right: -8vw; top: -10vw; border-radius: 50%; background: var(--pink); mix-blend-mode: multiply; opacity: .9; }
+.end h2 { color: var(--paper); margin: 0; font-size: clamp(42px, 7vw, 100px); font-variation-settings: "wdth" 130, "wght" 850; position: relative; }
+.end p { color: var(--paper); opacity: .9; max-width: 52ch; position: relative; }
+.end .row { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: center; margin-top: 30px; position: relative; }
+.end a.talk { color: var(--paper); border-color: var(--paper); font-weight: 600; text-decoration: none; padding: 12px 24px; font-size: 18px; }
+.end a.talk:hover { background: var(--paper); color: var(--blue) !important; }
+.end small { font-size: 14px; opacity: .8; }
+
+@media (max-width: 900px) {
+  .wrap { grid-template-columns: 1fr; }
+  .toc { position: static; max-height: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0 0 8px; }
+  .toc a { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: 14px; background: var(--card); }
+  .toc a.on { border-color: var(--pink); }
+  .flow { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .bar { gap: 14px; } .bar nav { gap: 14px; } .bar .work { display: none; }
+  .flow { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <a class="home" href="/"><span class="dot" aria-hidden="true"><i></i><i></i></span>Kinetry</a>
+  <nav aria-label="Site">
+    <a class="work" href="/#reel">Work</a>
+    <a href="/docs/" aria-current="page">Docs</a>
+    <a class="talk" href="mailto:moe@kinetry.xyz?subject=Kinetry%20access">Get access</a>
+  </nav>
+</header>
+
+<div class="top">
+  <h1>Kinetry, <span>for builders.</span></h1>
+  <p>Kinetry turns learning content and a brand into a short, narrated video. It's an engine, not an editor. You call it from your own platform, with your own AI keys, and keep everything it makes.</p>
+  <div class="pills"><span>Python library</span><span>CLI</span><span>HTTP job service</span><span>MCP server</span><span>LangChain tools</span><span>Docker image</span></div>
+</div>
+
+<div class="wrap">
+  <nav class="toc" aria-label="On this page">
+    <a href="#how">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#start">Quick start</a>
+    <a href="#python">Python API</a>
+    <a href="#http">HTTP service</a>
+    <a href="#agents">Agents: MCP and LangChain</a>
+    <a href="#sources">Sources</a>
+    <a href="#models">Models</a>
+    <a href="#voices">Voices and languages</a>
+    <a href="#look">The look</a>
+    <a href="#brand">Brands and 3D</a>
+    <a href="#config">Configuration</a>
+    <a href="#limits">Limits</a>
+  </nav>
+
+  <article>
+    <section id="how">
+      <h2>How it works</h2>
+      <p>Give Kinetry a lesson, guide or policy and a company website. A model decides what to say, how the brand looks and which look fits. Everything after that is plain code, so the same plan, brand and voice always give the same frames.</p>
+      <div class="flow" role="list">
+        <div role="listitem" class="ai"><b>Brand</b>Colors, fonts and logo read from the website, once.</div>
+        <div role="listitem" class="ai"><b>Direct</b>A creative director picks style, format and pacing.</div>
+        <div role="listitem" class="ai"><b>Plan</b>The script, written as scenes from a catalog.</div>
+        <div role="listitem"><b>Voice and fit</b>Every line voiced and measured; every text checked to fit.</div>
+        <div role="listitem"><b>Render</b>An MP4, QA frames and a report.</div>
+      </div>
+      <p>You can review and edit the plan (plain JSON) before rendering, or skip planning and render a plan you wrote. Every model output is recorded, so any run can be replayed without calling a model again.</p>
+    </section>
+
+    <section id="features">
+      <h2>Features</h2>
+      <div class="grid">
+        <div class="f"><b>Reads what you already have</b><span>Markdown, Word, PowerPoint (with speaker notes), PDF, web pages, and audio or video recordings.</span></div>
+        <div class="f"><b>Your brand, from your website</b><span>Colors, fonts and logo captured once and saved as a brand pack. Contrast is enforced to WCAG AA.</span></div>
+        <div class="f"><b>Hundreds of looks</b><span>28 scene types, 57 layouts, 7 styles and 3 formats (16:9, 9:16, 1:1), plus 9 transitions.</span></div>
+        <div class="f"><b>Seven video kinds</b><span>Lesson, course summary, session recap, explainer, how-to, announcement and onboarding, each with its own structure.</span></div>
+        <div class="f"><b>Narration that matches the screen</b><span>Each item appears exactly when it's said. Two-person dialogues use a voice per speaker.</span></div>
+        <div class="f"><b>Many languages</b><span>Captions, local voices for seven languages, cloud voices for the rest, and right-to-left layouts.</span></div>
+        <div class="f"><b>Motion layers</b><span>Opt-in camera moves, kinetic type, ambient light, animated illustrations and a 3D stage.</span></div>
+        <div class="f"><b>The brand's own 3D models</b><span>Products or mascots shared as .glb files, placed by an asset agent where each scene has room.</span></div>
+        <div class="f"><b>Text that always fits</b><span>Every line is measured. Too long: type shrinks a step, then a fast model shortens the copy.</span></div>
+        <div class="f"><b>Any model, your key</b><span>Anthropic, OpenAI, Bedrock, Gemini, Azure or any compatible endpoint. Keys never reach logs or reports.</span></div>
+        <div class="f"><b>Voice check</b><span>Optional speech-to-text pass that flags any line whose audio doesn't match the script.</span></div>
+        <div class="f"><b>Runs where you run</b><span>Your servers or cloud, with Docker, systemd or Lambda rendering. Finished videos can go straight to S3.</span></div>
+      </div>
+    </section>
+
+    <section id="start">
+      <h2>Quick start</h2>
+      <p>Needs Python 3.10+, Node.js 22+ and FFmpeg.</p>
+      <div class="note"><b>Private preview.</b> The repository isn't public yet. <a href="mailto:moe@kinetry.xyz?subject=Kinetry%20access">Ask for access</a> to install it.</div>
+<pre><code><span class="c"># install, then fetch the pinned renderer and browser</span>
+pip install "kinetry[llms,kokoro] @ git+ssh://git@github.com/MSBeni/kinetry.git"
+kinetry setup
+kinetry doctor
+
+<span class="c"># a brand, a plan you can review, then the video</span>
+kinetry brand https://example.com --save brands/example
+kinetry plan  lesson.md --section 2 --out plan.json
+kinetry run   --plan plan.json --brand brands/example --out lesson.mp4
+
+<span class="c"># or in one step, choosing the look yourself</span>
+kinetry run lesson.md --style warm --format 9:16 --captions --effects subtle --out shift.mp4</code></pre>
+      <p>Optional extras: <code>bedrock</code>, <code>anthropic</code>, <code>openai</code>, <code>google</code> (or <code>llms</code> for all four), <code>kokoro</code> (free local voice), <code>docs</code> (Word, PowerPoint, PDF), <code>service</code>, <code>mcp</code>, or <code>all</code>.</p>
+      <p>Or describe the video in plain words and let the brief agent fill in the request:</p>
+<pre><code>kinetry brief "a 60-second vertical how-to for new nurses on hand hygiene, in Spanish, with captions"</code></pre>
+    </section>
+
+    <section id="python">
+      <h2>Python API</h2>
+      <p>For a Python service, a pipeline step or a batch worker:</p>
+<pre><code>from kinetry import Kinetry, load_source
+
+tf = Kinetry(llm="anthropic:claude-sonnet-5-5")       <span class="c"># or openai:..., bedrock:&lt;model id&gt;, ...</span>
+pack = tf.brand("https://example.com")                  <span class="c"># BrandPack: kit + logo; pack.save("brands/example")</span>
+plan = tf.plan(load_source("lesson.md", section=2), brand=pack,
+               design={"format": "9:16"})              <span class="c"># a VideoPlan: review, edit, store</span>
+tf.preview(plan, brand=pack, out_dir="storyboard")      <span class="c"># one silent frame per scene, in seconds</span>
+result = tf.render(plan, brand=pack, out="lesson-2.mp4", music="bed.mp3")
+print(result.status, result.video, result.qa_frames)</code></pre>
+      <p><code>result.status</code> is <code>done</code>, <code>needs_review</code> (text still didn't fit after the repair rounds), <code>check_failed</code> or <code>error</code>. <code>report.json</code> in the run folder says why.</p>
+    </section>
+
+    <section id="http">
+      <h2>HTTP service</h2>
+      <p>For other languages, many callers or a queue: run <code>kinetry serve</code> or the Docker image. Jobs start, you poll or get a signed callback, and finished videos can be uploaded to S3-compatible storage.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Endpoint</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>POST /v1/brands</code></td><td>Read a brand from a website: <code>{"url": "https://customer.example"}</code></td></tr>
+          <tr><td><code>POST /v1/sources</code></td><td>Upload a .docx, .pptx or .pdf and get its sections (<code>/v1/sources/url</code> for a web page)</td></tr>
+          <tr><td><code>POST /v1/briefs</code></td><td>Turn a chat message into a structured request</td></tr>
+          <tr><td><code>POST /v1/plans</code></td><td>Write the plan from a source and a brand</td></tr>
+          <tr><td><code>POST /v1/videos</code></td><td>Render a plan (add <code>callback_url</code> to be called back)</td></tr>
+          <tr><td><code>GET /v1/videos/{id}</code></td><td>Job status, the video, and the model and voice used</td></tr>
+          <tr><td><code>GET /v1/catalog</code>, <code>GET /v1/kinds</code></td><td>Every style, scene type, layout and video kind</td></tr>
+        </tbody>
+      </table></div>
+<pre><code>curl -X POST https://kinetry.your-company.internal/v1/videos \
+  -H "Authorization: Bearer $KINETRY_API_KEY" -H "Content-Type: application/json" \
+  -d '{"plan": {...}, "brand_id": "acme", "voice": "kokoro:af_heart",
+       "callback_url": "https://lms.example/hooks/video-ready"}'</code></pre>
+      <p>Each request can bring its own model and key (<code>"llm": {...}</code>). Operators decide whether callers may choose models and voices.</p>
+    </section>
+
+    <section id="agents">
+      <h2>Agents: MCP and LangChain</h2>
+      <p>For an agent that should make videos as one of its tools:</p>
+<pre><code><span class="c"># any MCP client (Claude, Cursor, ...)</span>
+kinetry mcp
+
+<span class="c"># LangChain / LangGraph</span>
+from kinetry.integrations.langchain import make_tools
+tools = make_tools()   <span class="c"># list_design_options, create_brand, plan_video, start_video, video_status</span></code></pre>
+      <div class="tbl"><table>
+        <thead><tr><th>You have</th><th>Use</th></tr></thead>
+        <tbody>
+          <tr><td>A Python service or pipeline</td><td><code>from kinetry import Kinetry</code></td></tr>
+          <tr><td>Services in other languages, or many callers</td><td><code>kinetry serve</code> or the Docker image</td></tr>
+          <tr><td>A LangChain or LangGraph agent</td><td><code>make_tools()</code></td></tr>
+          <tr><td>An MCP-capable agent or IDE</td><td><code>kinetry mcp</code></td></tr>
+          <tr><td>A batch job, such as a course builder</td><td>The Python API in a worker, or the HTTP API from your queue</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="sources">
+      <h2>Sources</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Source</th><th>Split into sections by</th></tr></thead>
+        <tbody>
+          <tr><td>Markdown, text, saved HTML, JSON</td><td><code>##</code> headings</td></tr>
+          <tr><td>Word (.docx)</td><td>Heading 1; lists and tables kept as text</td></tr>
+          <tr><td>PowerPoint (.pptx)</td><td>One per slide, slide text and speaker notes</td></tr>
+          <tr><td>PDF</td><td>Bookmarks, else groups of five pages; headers and page numbers removed</td></tr>
+          <tr><td>Web page</td><td>Its headings, main content only</td></tr>
+          <tr><td>Audio or video recording</td><td>Transcribed first (Inworld speech-to-text)</td></tr>
+        </tbody>
+      </table></div>
+      <p>Pictures appear only when you list them, each with a note on what it shows. Lottie animations come in the same way.</p>
+    </section>
+
+    <section id="models">
+      <h2>Models</h2>
+      <p>Pick any provider and model, and bring your own key.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Spec</th><th>Key</th></tr></thead>
+        <tbody>
+          <tr><td><code>anthropic:claude-sonnet-5-5</code></td><td><code>ANTHROPIC_API_KEY</code></td></tr>
+          <tr><td><code>openai:gpt-4.1</code></td><td><code>OPENAI_API_KEY</code></td></tr>
+          <tr><td><code>bedrock:&lt;model id&gt;</code></td><td>The AWS credential chain, or a Bedrock API key</td></tr>
+          <tr><td><code>google:gemini-2.5-pro</code></td><td><code>GOOGLE_API_KEY</code></td></tr>
+          <tr><td><code>azure:&lt;deployment&gt;</code></td><td><code>AZURE_OPENAI_API_KEY</code> and your endpoint</td></tr>
+          <tr><td><code>openai_compatible:&lt;model&gt;</code></td><td>OpenRouter, Groq, Together, vLLM, LiteLLM and others</td></tr>
+        </tbody>
+      </table></div>
+      <p>A second, cheaper model can handle copy rewrites (<code>--llm-fast</code>). Models without tool calling work through a JSON-schema fallback.</p>
+      <p><b>Cost:</b> about $0.06–0.11 in model calls for a 90-second video with Claude Sonnet on Bedrock and the free local voice. Cloud voices cost extra. A render takes about 4–5 minutes on 2 vCPUs.</p>
+    </section>
+
+    <section id="voices">
+      <h2>Voices and languages</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Spec</th><th>Voice</th></tr></thead>
+        <tbody>
+          <tr><td><code>kokoro:af_heart</code>, …</td><td>Free and local on CPU: 54 voices</td></tr>
+          <tr><td><code>inworld:&lt;voice&gt;</code></td><td>Inworld built-in or cloned voices</td></tr>
+          <tr><td><code>openai:coral</code>, …</td><td>OpenAI text to speech</td></tr>
+          <tr><td><code>elevenlabs:&lt;voice_id&gt;</code></td><td>Any voice in your ElevenLabs library</td></tr>
+          <tr><td><code>voicestudio:&lt;profile&gt;</code></td><td>A saved or designed voice on your own VoiceStudio server</td></tr>
+          <tr><td>Your own object</td><td>Anything with <code>synthesize(text, out_path)</code></td></tr>
+        </tbody>
+      </table></div>
+      <p>The local voice narrates English, Spanish, French, Italian, Brazilian Portuguese, Hindi and Mandarin. Cloud voices cover Japanese, Farsi, Arabic, Hebrew, Urdu and more, and right-to-left scripts are laid out right to left. Voice cloning is off unless the operator turns it on, and always needs a consent recording from the speaker.</p>
+    </section>
+
+    <section id="look">
+      <h2>The look</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Layer</th><th>Options</th></tr></thead>
+        <tbody>
+          <tr><td>Scene types</td><td>Title, steps, checklists, timelines, comparisons, do/don't, stats, charts, quotes, dialogues, chat threads, code, decisions, annotated screens and more: 28 in all</td></tr>
+          <tr><td>Styles</td><td>Editorial, technical, warm, bold, minimal, corporate, classic</td></tr>
+          <tr><td>Formats</td><td>16:9, 9:16 and 1:1 (captions on by default for the last two)</td></tr>
+          <tr><td>Transitions</td><td>Exit, cut, fade, push, rise, iris, wipe, scan, scribble</td></tr>
+          <tr><td>Motion layers</td><td>Camera, kinetic type and ambient light, each off, subtle or rich; illustration and 3D depth when you ask for them</td></tr>
+        </tbody>
+      </table></div>
+      <p>Leave any choice to the creative director or pin it. A brand profile holds a company's standing choices: allowed styles, a format, voices per role, a music bed.</p>
+    </section>
+
+    <section id="brand">
+      <h2>Brands and 3D</h2>
+      <ul class="tight">
+        <li>Text colors are darkened until they pass WCAG AA on the video's background.</li>
+        <li>Proprietary fonts are swapped for close open fonts, and every swap is logged.</li>
+        <li>The logo is dropped, with a note, if it wouldn't stand out on the background.</li>
+        <li>A brand's own 3D models (.glb, up to 25 MB) are checked, described and placed by an asset agent. The logo's symbol can be cut out and extruded in 3D for the opening and closing scenes.</li>
+      </ul>
+<pre><code>kinetry assets3d brands/acme add scooter.glb --role hero
+kinetry assets3d brands/acme mark          <span class="c"># cut the symbol out of the logo</span>
+kinetry run lesson.md --brand brands/acme --depth subtle --out lesson.mp4</code></pre>
+      <p>Use a company's logo, fonts and models only with its permission.</p>
+    </section>
+
+    <section id="config">
+      <h2>Configuration</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Variable</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>KINETRY_LLM</code>, <code>KINETRY_LLM_FAST</code></td><td>Default models, as <code>provider:model</code></td></tr>
+          <tr><td><code>KINETRY_API_KEY</code></td><td>Bearer token for the HTTP service</td></tr>
+          <tr><td><code>KINETRY_QUALITY</code></td><td><code>draft</code>, <code>standard</code>, <code>high</code> or a CRF number</td></tr>
+          <tr><td><code>KINETRY_WORKERS</code></td><td>Renders at once per service process</td></tr>
+          <tr><td><code>KINETRY_S3_BUCKET</code></td><td>Upload finished videos to S3-compatible storage</td></tr>
+          <tr><td><code>KINETRY_CLIENT_LLM</code></td><td>Whether callers may pick models: <code>off</code>, <code>byok</code> or <code>any</code></td></tr>
+          <tr><td><code>KINETRY_VOICE_CLONING</code></td><td>Off unless set to <code>1</code></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="limits">
+      <h2>Limits</h2>
+      <ul class="tight">
+        <li>Narration is written by a model. It sticks to the source's facts, but keep a human review step for anything learners see.</li>
+        <li>A source is limited to about 12,000 words (25 pages). Longer documents become one video per section.</li>
+        <li>Scanned PDFs, legacy .doc and .ppt, and course export zips (SCORM, Common Cartridge) aren't read yet.</li>
+        <li>A render uses about 2 vCPUs for 4–5 minutes per 90 seconds of video. Scale out with more workers.</li>
+      </ul>
+    </section>
+  </article>
+</div>
+
+<footer class="end">
+  <h2>Build with it.</h2>
+  <p>Kinetry is in private preview. Tell us what you'd like to plug it into.</p>
+  <div class="row">
+    <a class="talk" href="mailto:moe@kinetry.xyz?subject=Kinetry%20access">moe@kinetry.xyz</a>
+    <small>© 2026 Kinetry</small>
+  </div>
+</footer>
+
+<script>
+// copy buttons on code blocks
+document.querySelectorAll("pre").forEach((pre) => {
+  const b = document.createElement("button");
+  b.type = "button"; b.textContent = "Copy";
+  b.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(pre.querySelector("code").innerText); b.textContent = "Copied"; }
+    catch (e) { b.textContent = "Select and copy"; }
+    setTimeout(() => (b.textContent = "Copy"), 1600);
+  });
+  pre.appendChild(b);
+});
+// mark the section in view
+const links = [...document.querySelectorAll(".toc a")];
+const io = new IntersectionObserver((es) => {
+  es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    links.forEach((a) => a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id));
+  });
+}, { rootMargin: "-20% 0px -70% 0px" });
+document.querySelectorAll("article section").forEach((s) => io.observe(s));
+</script>
+</body>
+</html>
