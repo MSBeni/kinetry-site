@@ -218,6 +218,15 @@ a { color: inherit; }
 .does p:nth-of-type(3) { --c: var(--sun); }
 .does p:nth-of-type(4) { --c: var(--pink); }
 
+
+/* ---------- for developers ---------- */
+.dev { padding: 10px var(--gutter) 120px; display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(18px, 2.4vw, 36px); align-items: center; }
+.dev .devclip { grid-column: 1 / span 7; --plate: var(--sun); }
+.dev .devtext { grid-column: 8 / span 5; padding-left: clamp(0px, 2vw, 32px); }
+.dev h2 { text-wrap: balance; margin: 0 0 18px; font-family: var(--display); font-weight: 800; font-size: clamp(40px, 5.4vw, 86px); line-height: .9;
+  font-variation-settings: "wdth" 62, "wght" 820; }
+.dev p { margin: 0 0 26px; font-size: clamp(19px, 1.8vw, 24px); line-height: 1.3; max-width: 24ch; }
+
 /* ---------- end ---------- */
 .end {
   padding: 90px var(--gutter) 40px;
@@ -258,6 +267,7 @@ dialog .close {
   .c2, .c6 { grid-column: 1 / span 4; margin-top: 0; }
   .c3 { grid-column: 2 / span 5; margin-top: 0; }
   .does { grid-template-columns: 1fr; gap: 28px; }
+  .dev .devclip, .dev .devtext { grid-column: 1 / -1; }
   .blobs .b1 { width: 90vw; height: 90vw; right: -40vw; top: -20vw; }
   .blobs .b2 { width: 44vw; height: 44vw; bottom: 22vh; }
 }
@@ -296,6 +306,19 @@ dialog .close {
     <p>Takes your colors, type and logo from your website.</p>
     <p>Writes the script, picks the scenes and narrates, in many languages.</p>
     <p>Runs in your own cloud, with your own AI keys.</p>
+  </section>
+  <section class="dev" aria-labelledby="dev-h">
+    <figure class="clip devclip">
+      <button type="button" aria-label="Play with sound: Kinetry's own developer guide">
+        <video muted loop playsinline preload="none" poster="media/kdev.jpg" src="media/kdev.mp4"></video>
+        <span class="sound">Play with sound</span></button>
+      <figcaption>Kinetry, explained by Kinetry.</figcaption>
+    </figure>
+    <div class="devtext">
+      <h2 id="dev-h">Built to be built on.</h2>
+      <p>Call it from Python, over HTTP, or from your agents with MCP and LangChain.</p>
+      <a class="play" href="/docs/"><b aria-hidden="true"></b>Read the docs</a>
+    </div>
   </section>
 </main>
 
@@ -365,12 +388,18 @@ for (const c of clips) {
   });
   reel.appendChild(fig);
 }
+// the developer film opens in the same player
+const dev = document.querySelector(".devclip");
+dev.querySelector("button").addEventListener("click", () => {
+  pv.src = "media/hd/kdev.mp4"; pv.muted = false; pv.currentTime = 0;
+  player.showModal(); pv.play().catch(() => {});
+});
 // previews play silently while on screen
 if (!still) {
   const io = new IntersectionObserver((es) => {
     for (const e of es) { const v = e.target; e.isIntersecting ? v.play().catch(() => {}) : v.pause(); }
   }, { threshold: .35 });
-  reel.querySelectorAll("video").forEach((v) => io.observe(v));
+  document.querySelectorAll(".clip video").forEach((v) => io.observe(v));
 }
 const shut = () => { pv.pause(); player.close(); };
 player.querySelector(".close").addEventListener("click", shut);
