@@ -65,6 +65,11 @@ a { color: var(--blue); text-underline-offset: 3px; }
 .pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
 .pills span { font-size: 14px; font-weight: 600; padding: 6px 14px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
 
+.film { padding: 8px var(--gutter) 40px; max-width: 1280px; }
+.film figure { margin: 0; max-width: 1080px; }
+.film video { display: block; width: 100%; height: auto; border-radius: 18px; background: #12153a; box-shadow: 12px 12px 0 var(--pink); }
+.film figcaption { margin-top: 18px; font-size: 15px; color: var(--ink-soft); max-width: 70ch; }
+
 /* layout */
 .wrap { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); padding: 0 var(--gutter) 80px; max-width: 1280px; }
 .toc { position: sticky; top: 84px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; padding: 8px 0; font-size: 15px; }
@@ -151,6 +156,13 @@ ul.tight { padding-left: 20px; } ul.tight li { margin: 4px 0; }
   <p>Kinetry turns learning content and a brand into a short, narrated video. It's an engine, not an editor. You call it from your own platform, with your own AI keys, and keep everything it makes.</p>
   <div class="pills"><span>Python library</span><span>CLI</span><span>HTTP job service</span><span>MCP server</span><span>LangChain tools</span><span>Docker image</span></div>
 </div>
+
+<section class="film" aria-label="Video: Kinetry from your own code">
+  <figure>
+    <video controls playsinline preload="none" poster="/media/kdev.jpg" src="/media/hd/kdev.mp4"></video>
+    <figcaption>A 74-second tour of using Kinetry from code: install, Python, the HTTP service and every way to plug it in. Kinetry made this video from a plan, with Inworld voices.</figcaption>
+  </figure>
+</section>
 
 <div class="wrap">
   <nav class="toc" aria-label="On this page">
