@@ -138,6 +138,7 @@ ul.tight { padding-left: 20px; } ul.tight li { margin: 4px 0; }
   .flow { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+.end p a.inl{color:inherit;text-decoration:underline;text-underline-offset:3px}
 </style>
 </head>
 <body>
@@ -147,13 +148,13 @@ ul.tight { padding-left: 20px; } ul.tight li { margin: 4px 0; }
   <nav aria-label="Site">
     <a class="work" href="/#reel">Work</a>
     <a href="/docs/" aria-current="page">Docs</a>
-    <a class="talk" href="mailto:moe@kinetry.xyz?subject=Kinetry%20access">Get access</a>
+    <a class="talk" href="https://github.com/MSBeni/kinetry">GitHub</a>
   </nav>
 </header>
 
 <div class="top">
   <h1>Kinetry, <span>for builders.</span></h1>
-  <p>Kinetry turns learning content and a brand into a short, narrated video. It's an engine, not an editor. You call it from your own platform, with your own AI keys, and keep everything it makes.</p>
+  <p>Kinetry turns learning content and a brand into a short, narrated video. It's an engine, not an editor. You call it from your own platform, with your own AI keys, and keep everything it makes. It's open source under the Apache License 2.0.</p>
   <div class="pills"><span>Python library</span><span>CLI</span><span>HTTP job service</span><span>MCP server</span><span>LangChain tools</span><span>Docker image</span></div>
 </div>
 
@@ -169,6 +170,8 @@ ul.tight { padding-left: 20px; } ul.tight li { margin: 4px 0; }
     <a href="#how">How it works</a>
     <a href="#features">Features</a>
     <a href="#start">Quick start</a>
+    <a href="#lms">LMS packages</a>
+    <a href="#languages">Many languages</a>
     <a href="#python">Python API</a>
     <a href="#http">HTTP service</a>
     <a href="#agents">Agents: MCP and LangChain</a>
@@ -200,7 +203,7 @@ ul.tight { padding-left: 20px; } ul.tight li { margin: 4px 0; }
       <div class="grid">
         <div class="f"><b>Reads what you already have</b><span>Markdown, Word, PowerPoint (with speaker notes), PDF, web pages, and audio or video recordings.</span></div>
         <div class="f"><b>Your brand, from your website</b><span>Colors, fonts and logo captured once and saved as a brand pack. Contrast is enforced to WCAG AA.</span></div>
-        <div class="f"><b>Hundreds of looks</b><span>28 scene types, 57 layouts, 7 styles and 3 formats (16:9, 9:16, 1:1), plus 9 transitions.</span></div>
+        <div class="f"><b>Hundreds of looks</b><span>29 scene types, 59 layouts, 7 styles and 3 formats (16:9, 9:16, 1:1), plus 9 transitions.</span></div>
         <div class="f"><b>Seven video kinds</b><span>Lesson, course summary, session recap, explainer, how-to, announcement and onboarding, each with its own structure.</span></div>
         <div class="f"><b>Narration that matches the screen</b><span>Each item appears exactly when it's said. Two-person dialogues use a voice per speaker.</span></div>
         <div class="f"><b>Many languages</b><span>Captions, local voices for seven languages, cloud voices for the rest, and right-to-left layouts.</span></div>
@@ -209,6 +212,9 @@ ul.tight { padding-left: 20px; } ul.tight li { margin: 4px 0; }
         <div class="f"><b>Text that always fits</b><span>Every line is measured. Too long: type shrinks a step, then a fast model shortens the copy.</span></div>
         <div class="f"><b>Any model, your key</b><span>Anthropic, OpenAI, Bedrock, Gemini, Azure or any compatible endpoint. Keys never reach logs or reports.</span></div>
         <div class="f"><b>Voice check</b><span>Optional speech-to-text pass that flags any line whose audio doesn't match the script.</span></div>
+        <div class="f"><b>Ready for your LMS</b><span>SCORM 1.2 and 2004 packages with captions, chapters, a transcript and a knowledge check drawn from the source.</span></div>
+        <div class="f"><b>One course, many languages</b><span>Translate a reviewed video into other languages in one batch: same scenes, a voice per language.</span></div>
+        <div class="f"><b>Try it with no keys</b><span><code>kinetry demo</code> makes a video on your machine with no account, no keys and no model calls.</span></div>
         <div class="f"><b>Runs where you run</b><span>Your servers or cloud, with Docker, systemd or Lambda rendering. Finished videos can go straight to S3.</span></div>
       </div>
     </section>
@@ -216,11 +222,10 @@ ul.tight { padding-left: 20px; } ul.tight li { margin: 4px 0; }
     <section id="start">
       <h2>Quick start</h2>
       <p>Needs Python 3.10+, Node.js 22+ and FFmpeg.</p>
-      <div class="note"><b>Private preview.</b> The repository isn't public yet. <a href="mailto:moe@kinetry.xyz?subject=Kinetry%20access">Ask for access</a> to install it.</div>
 <pre><code><span class="c"># install, then fetch the pinned renderer and browser</span>
-pip install "kinetry[llms,kokoro] @ git+ssh://git@github.com/MSBeni/kinetry.git"
+pip install "kinetry[llms,kokoro]"
 kinetry setup
-kinetry doctor
+kinetry demo      <span class="c"># a 40-second video, no keys needed</span>
 
 <span class="c"># a brand, a plan you can review, then the video</span>
 kinetry brand https://example.com --save brands/example
@@ -229,9 +234,41 @@ kinetry run   --plan plan.json --brand brands/example --out lesson.mp4
 
 <span class="c"># or in one step, choosing the look yourself</span>
 kinetry run lesson.md --style warm --format 9:16 --captions --effects subtle --out shift.mp4</code></pre>
+      <p>The first narration with the free local voice downloads its model (about 350 MB), so the first run takes a few minutes longer. Planning from your own content needs a model: set <code>KINETRY_LLM</code> and the provider's key, or pass <code>--llm</code>.</p>
       <p>Optional extras: <code>bedrock</code>, <code>anthropic</code>, <code>openai</code>, <code>google</code> (or <code>llms</code> for all four), <code>kokoro</code> (free local voice), <code>docs</code> (Word, PowerPoint, PDF), <code>service</code>, <code>mcp</code>, or <code>all</code>.</p>
       <p>Or describe the video in plain words and let the brief agent fill in the request:</p>
 <pre><code>kinetry brief "a 60-second vertical how-to for new nurses on hand hygiene, in Spanish, with captions"</code></pre>
+    </section>
+
+    <section id="lms">
+      <h2>LMS packages</h2>
+      <p>A video becomes a lesson your learning platform can import, in one more step:</p>
+<pre><code><span class="c"># a video and its LMS package (lesson.zip) in one run</span>
+kinetry run lesson.md --brand brands/acme --out lesson.mp4 --package scorm12
+
+<span class="c"># or package a finished run: SCORM 2004, four questions, 75% to pass</span>
+kinetry package RUN_DIR --out lesson.zip --standard scorm2004 --quiz 4 --mastery 75
+
+<span class="c"># a plain zip for any website, no quiz</span>
+kinetry package RUN_DIR --out lesson-web.zip --standard web --quiz off</code></pre>
+      <ul class="tight">
+        <li>The package holds the video, captions (with speaker names in dialogues), chapters, a synced transcript and an optional knowledge check of 1 to 6 questions.</li>
+        <li>Each question must quote its source word for word, or it's dropped. Bring your own questions with <code>--quiz-file</code>.</li>
+        <li>Only what was actually watched counts: skipping ahead doesn't. The score, pass or fail, progress and session time go to the LMS, and learners resume where they left off.</li>
+      </ul>
+      <p>Over HTTP, add <code>"package": {"standard": "scorm12", "quiz": 3}</code> to <code>POST /v1/videos</code> and download it from <code>GET /v1/videos/{id}/package</code>.</p>
+    </section>
+
+    <section id="languages">
+      <h2>Many languages</h2>
+      <p>A reviewed video becomes the same video in other languages, as one batch:</p>
+<pre><code><span class="c"># languages the free local voice speaks need nothing more</span>
+kinetry localize plan.json --to es,fr,zh --brand brands/acme --out-dir out/i18n
+
+<span class="c"># others take a cloud voice; add an LMS package per language</span>
+kinetry localize out/run --to de,ar --out-dir out/i18n --package scorm12 \
+  --voice de=inworld:&lt;voice&gt; --voice ar=inworld:&lt;voice&gt;</code></pre>
+      <p>Only the words change: scenes, layouts, brand and order stay as reviewed, and each language gets its own voice and timing. Languages the local voice speaks need nothing more; others take a cloud voice, and every language is checked for one before anything runs. Add <code>--translate-only</code> to review the translated plans first.</p>
     </section>
 
     <section id="python">
@@ -261,6 +298,7 @@ print(result.status, result.video, result.qa_frames)</code></pre>
           <tr><td><code>POST /v1/plans</code></td><td>Write the plan from a source and a brand</td></tr>
           <tr><td><code>POST /v1/videos</code></td><td>Render a plan (add <code>callback_url</code> to be called back)</td></tr>
           <tr><td><code>GET /v1/videos/{id}</code></td><td>Job status, the video, and the model and voice used</td></tr>
+          <tr><td><code>GET /v1/videos/{id}/package</code></td><td>The LMS package, when the request asked for one</td></tr>
           <tr><td><code>GET /v1/catalog</code>, <code>GET /v1/kinds</code></td><td>Every style, scene type, layout and video kind</td></tr>
         </tbody>
       </table></div>
@@ -347,7 +385,7 @@ tools = make_tools()   <span class="c"># list_design_options, create_brand, plan
       <div class="tbl"><table>
         <thead><tr><th>Layer</th><th>Options</th></tr></thead>
         <tbody>
-          <tr><td>Scene types</td><td>Title, steps, checklists, timelines, comparisons, do/don't, stats, charts, quotes, dialogues, chat threads, code, decisions, annotated screens and more: 28 in all</td></tr>
+          <tr><td>Scene types</td><td>Title, steps, checklists, timelines, comparisons, do/don't, stats, charts, quotes, dialogues, chat threads, code, decisions, annotated screens and more: 29 in all</td></tr>
           <tr><td>Styles</td><td>Editorial, technical, warm, bold, minimal, corporate, classic</td></tr>
           <tr><td>Formats</td><td>16:9, 9:16 and 1:1 (captions on by default for the last two)</td></tr>
           <tr><td>Transitions</td><td>Exit, cut, fade, push, rise, iris, wipe, scan, scribble</td></tr>
@@ -392,7 +430,7 @@ kinetry run lesson.md --brand brands/acme --depth subtle --out lesson.mp4</code>
       <ul class="tight">
         <li>Narration is written by a model. It sticks to the source's facts, but keep a human review step for anything learners see.</li>
         <li>A source is limited to about 12,000 words (25 pages). Longer documents become one video per section.</li>
-        <li>Scanned PDFs, legacy .doc and .ppt, and course export zips (SCORM, Common Cartridge) aren't read yet.</li>
+        <li>Scanned PDFs, legacy .doc and .ppt, and course export zips (SCORM, Common Cartridge) aren't read as sources yet. Writing SCORM packages is supported.</li>
         <li>A render uses about 2 vCPUs for 4–5 minutes per 90 seconds of video. Scale out with more workers.</li>
       </ul>
     </section>
@@ -401,10 +439,10 @@ kinetry run lesson.md --brand brands/acme --depth subtle --out lesson.mp4</code>
 
 <footer class="end">
   <h2>Build with it.</h2>
-  <p>Kinetry is in private preview. Tell us what you'd like to plug it into.</p>
+  <p>Kinetry is open source. Questions, ideas and pull requests are welcome on <a class="inl" href="https://github.com/MSBeni/kinetry">GitHub</a>, or write to us.</p>
   <div class="row">
-    <a class="talk" href="mailto:moe@kinetry.xyz?subject=Kinetry%20access">moe@kinetry.xyz</a>
-    <small>© 2026 Kinetry</small>
+    <a class="talk" href="mailto:moe@kinetry.xyz?subject=Kinetry">moe@kinetry.xyz</a>
+    <small>Apache License 2.0</small>
   </div>
 </footer>
 
